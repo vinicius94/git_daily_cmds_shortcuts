@@ -1,0 +1,34 @@
+[alias]
+	load = "!git fetch origin; git pull"
+	lbranch = "!f() { git branch -r | grep \"$1/v\" | tail -1 | sed s/origin[/]// | xargs echo -n; }; f"
+	hotfix = "!git load; git lbranch hotfix | xargs git checkout"
+	release = "!git load; git lbranch release | xargs git checkout"
+	home = "!git checkout master; git load"
+	dev = "!git checkout develop; git load"
+	newhfx = "!f() { git checkout -b hotfix/${1,,}; }; f"
+	remove = "!f() { git home; git branch -D $1; }; f"
+	cm = "!f() { git commit -m \"#$1\"$'\n'\"$2\"; }; f"
+	cma = "!f() { git commit --amend -m \"#$1\"$'\n'\"$2\"; }; f"
+	dellocal = "branch -d"
+	delremote = "push --delete origin "
+	delboth = "!f() { git dellocal $1; git delremote $1 }; f"
+	upbranch = "!git branch --show-current | xargs git push --set-upstream origin "
+	st = "status"
+	dft = "difftool -y"
+[diff]
+    tool = vscode
+[difftool "vscode"]
+    cmd = code --wait --diff $LOCAL $REMOTE
+[difftool "sourcetree"]
+	cmd = '' \"$LOCAL\" \"$REMOTE\"
+[merge]
+	tool = vscode
+[mergetool "sourcetree"]
+	cmd = "'' "
+	trustExitCode = true
+[mergetool "vscode"]
+	cmd = code --wait $MERGED
+[core]
+	autocrlf = true
+[credential]
+	helper = manager-core
